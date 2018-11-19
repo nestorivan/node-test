@@ -56,4 +56,13 @@ storeSchema.pre('save', async function(next) {
   //TODO make more resilient so slugs are unique
 });
 
+/*Do not declare statics using ES6 arrow functions (=>). Arrow functions explicitly prevent binding this, so the above examples will not work because of the value of this.*/
+storeSchema.statics.getTagsList = function(cb) {
+  return this.aggregate([
+    { $unwind: '$tags' },
+    { $group: { _id: '$tags', count: { $sum: 1 } } },
+    { $sort: { count: -1 } }
+  ]);
+};
+
 module.exports = mongoose.model('Store', storeSchema);
