@@ -62,3 +62,9 @@ typings/
 
 # env file
 *.env
+
+# uploads
+public/uploads/*
+
+#build
+public/dist/
