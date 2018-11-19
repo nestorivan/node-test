@@ -31,7 +31,7 @@ exports.resize = async (req, res, next) => {
     next();
     return;
   }
-  const extension= req.file.mimetype.split('/')[1];
+  const extension = req.file.mimetype.split('/')[1];
   req.body.photo = `${uuid.v4()}.${extension}`;
   //now we resize
   const photo = await jimp.read(req.file.buffer);
@@ -42,7 +42,7 @@ exports.resize = async (req, res, next) => {
 };
 
 exports.createStore = async (req, res) => {
-  const store = await (new Store(req.body)).save();
+  const store = await new Store(req.body).save();
   req.flash(
     'success',
     `Successfully Created ${store.name}. Care to leave a review?`
@@ -76,4 +76,11 @@ exports.updateStore = async (req, res) => {
   );
 
   res.redirect(`/stores/${store._id}/edit`);
+};
+
+exports.getStoreBySlug = async (req, res, next) => {
+  const store = await Store.findOne({ slug: req.params.slug });
+  if (!store) return next();
+
+  res.render('store', { title: store.name, store });
 };
